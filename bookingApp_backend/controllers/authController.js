@@ -5,18 +5,18 @@ const nodemailer = require("nodemailer");
 exports.addEmployee = async (req, res) => {
     try {
         const { error } = empValidation.validate(req.body);
-        const newEmp = {
-            ...req.body,
-            email: req.body.email.toLowerCase(),
-            account: req.body.role === "Admin" ? 1 :
-                req.body.role === "Manager" ? 2 :
-                    req.body.role === "Accountant" ? 5 :
-                        req.body.role === "Consultant" ? 3 : 4,
-            createdBy: req.params.id
-        }
         if (error) {
             res.status(400).send({ error: error.details[0].message });
         } else {
+            const newEmp = {
+                ...req.body,
+                email: req.body.email.toLowerCase(),
+                account: req.body.role === "Admin" ? 1 :
+                    req.body.role === "Manager" ? 2 :
+                        req.body.role === "Accountant" ? 5 :
+                            req.body.role === "Consultant" ? 3 : 4,
+                createdBy: req.params.id
+            }
             const [isEmpEmail, isEmpPhone] = await Promise.all([
                 Employee.find({ email: newEmp.email }),
                 Employee.find({ contact: newEmp.contact })])
