@@ -30,7 +30,7 @@ const empValidation = Joi.object({
   password: Joi.string().min(6).required(), // You can adjust min length
   contact: Joi.string().pattern(/^[0-9]{10}$/).message("contact must be 10 characters").required(),
   role: Joi.string().required(),
-  account: Joi.number().required(),
+  account: Joi.number().optional(),
   blood: Joi.string().valid('A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-').optional(),
   address: Joi.string().required(),
   emergencyConNumber: Joi.string().pattern(/^[0-9]{10}$/).message("emergencyConNumber must be 10 characters").optional(),
