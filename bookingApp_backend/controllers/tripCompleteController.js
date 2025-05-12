@@ -5,7 +5,6 @@ const path = require("path");
 
 const completeTripToDriver = async (req, res) => {
     try {
-
         // Validate booking existence
         const booking = await Booking.findById(req.params.id);
         if (!booking) {
@@ -16,8 +15,9 @@ const completeTripToDriver = async (req, res) => {
             bookingId: req.params.id
         }
         const addCompletedTrip = await TripComplete.create(newCompletedTripData);
+        booking.vehicleInTrip = addCompletedTrip._id;
+        await booking.save();
         return res.send({ message: "Trip details added successfully", addCompletedTrip })
-
     } catch (error) {
         console.error(error);
         return res.status(500).send({ error: error.message });

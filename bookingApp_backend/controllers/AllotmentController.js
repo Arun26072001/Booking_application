@@ -10,7 +10,6 @@ async function addAllotment(req, res) {
         const vehicle = await Vehicle.findById(req.body.vehicle);
         const driver = await Employee.findById(req.body.driver);
         const { pickupLocation, destination, email } = booking;
-        // const { driverName, driverContact } = req.body;
         const newAllotment = { ...req.body, bookingId: req.params.id }
         
         const validation = allotmentValidation.validate(newAllotment);
@@ -27,6 +26,9 @@ async function addAllotment(req, res) {
                 booking.allotment = allotment._id;
                 await booking.save();
 
+                // update statue for vehicle
+                vehicle.onTrip = true;
+                await vehicle.save();
                 var transporter = nodemailer.createTransport({
                     service: 'gmail',
                     auth: {
@@ -40,58 +42,25 @@ async function addAllotment(req, res) {
                     to: email,
                     subject: 'Booking confirmation from RBC Travels',
                     html: `<!DOCTYPE html>
-                            <html lang="en">
-                                <head>
-                                    <meta charset="UTF-8" />
-                                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                                    <title>RBC Travels</title>
-                                    <style>
-                                        @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
-                                        * {
-                                            font-family: 'Roboto', sans-serif;
-                                        }
-                                        .container {
-                                            display: flex;
-                                            align-items: center;
-                                            justify-content: center;
-                                            background-color: #f4f4f4;
-                                            padding: 20px;
-                                        }
-                                        .content {
-                                            width: 300px;
-                                            border-radius: 10px;
-                                            padding: 20px;
-                                            background: white;
-                                            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-                                            font-size: 16px;
-                                            color: #333;
-                                        }
-                                        h4 {
-                                            text-align: center;
-                                            margin-bottom: 10px;
-                                            color: #333;
-                                        }
-                                        p {
-                                            margin: 8px 0;
-                                        }
-                                        a {
-                                            color: #007BFF;
-                                            text-decoration: none;
-                                        }
-                                    </style>
-                                </head>
-                                <body>
-                                    <div class="container">
-                                        <div class="content">
-                                            <h4>Driver and Vehicle Details</h4>
-                                            <p>Driver Name: <b>${driver.name}</b></p>
-                                            <p>Driver Contact: <a href="tel:+91${driver.contact}"><b>${driver.contact}</b></a></p>
-                                            <p>Vehicle Name: <b>${vehicle.name}</b></p>
-                                            <p>Vehicle Number: <b>${vehicle.vehicleNo}</b></p>
-                                        </div>
-                                    </div>
-                                </body>
-                            </html>`
+                    <html lang="en">
+                      <head>
+                        <meta charset="UTF-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                        <title>RBC Travels</title>
+                        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+                      </head>
+                      <body style="margin: 0; font-family: 'Roboto', sans-serif; background-color: #f4f4f4;">
+                        <div style="display: flex; align-items: center; justify-content: center; padding: 20px;">
+                          <div style="width: 300px; border-radius: 10px; padding: 20px; background: white; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; font-size: 16px; color: #333;">
+                            <h4 style="text-align: center; margin-bottom: 10px; color: #333;">Driver and Vehicle Details</h4>
+                            <p style="margin: 8px 0;">Driver Name: <b>${driver.name}</b></p>
+                            <p style="margin: 8px 0;">Driver Contact: <a href="tel:+91${driver.contact}" style="color: #007BFF; text-decoration: none;"><b>${driver.contact}</b></a></p>
+                            <p style="margin: 8px 0;">Vehicle Name: <b>${vehicle.name}</b></p>
+                            <p style="margin: 8px 0;">Vehicle Number: <b>${vehicle.vehicleNo}</b></p>
+                          </div>
+                        </div>
+                      </body>
+                    </html>`                    
                 };
 
                 transporter.sendMail(mailOptions, function (error, info) {

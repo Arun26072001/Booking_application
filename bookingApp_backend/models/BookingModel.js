@@ -6,19 +6,20 @@ const bookingSchema = new mongoose.Schema({
     bookedBy: { type: mongoose.Schema.Types.ObjectId, ref: "employee" },
     customerName: { type: String },
     customerContact: { type: String },
-    email: { type: String, trim: true, lowercase: true},
+    email: { type: String, trim: true, lowercase: true },
     tripType: { type: String }, // Fixed definition
     numOfPeople: { type: Number },
     vehicleType: { type: mongoose.Schema.Types.ObjectId, ref: "vehicle" },
-    pickupDateTime: { type: String },
+    pickupDateTime: { type: Date },
     pickupLocation: { type: String },
     pickupLocationLink: { type: String },
     destination: { type: String },
-    dropDateTime: { type: String },
+    dropDateTime: { type: Date },
     placesToVisit: [{ type: String }],
     notes: { type: String },
     kmAllowed: { type: Number },
     totalPayment: { type: Number },
+    balanceToDriver: { type: Number },
     advancePayment: { type: Number },
     isIncludesTollAndParking: { type: String },
     extraKmCharge: { type: Number },
@@ -26,7 +27,7 @@ const bookingSchema = new mongoose.Schema({
     tripCompleted: { type: Boolean, default: false },
     allotment: { type: mongoose.Schema.Types.ObjectId, ref: "allotment" },
     vehicleInTrip: { type: mongoose.Schema.Types.ObjectId, ref: "tripComplete" },
-    tripCost: {type: mongoose.Schema.Types.ObjectId, ref:"TripCost", default: null}
+    tripCost: { type: mongoose.Schema.Types.ObjectId, ref: "TripCost", default: null }
 }, { timestamps: true });
 
 const Booking = mongoose.model("Booking", bookingSchema);
@@ -50,6 +51,7 @@ const bookingValidation = Joi.object({
     kmAllowed: Joi.number().min(0).required(),
     totalPayment: Joi.number().min(0).required(),
     advancePayment: Joi.number().min(0).max(Joi.ref("totalPayment")).required(),
+    balanceToDriver: Joi.number().min(0).max(Joi.ref("totalPayment")).required(),
     isIncludesTollAndParking: Joi.string().valid("yes", "no", "Yes", "No").required(), // Adjust to match your expected values
     extraKmCharge: Joi.number().min(0).required(),
     extraHourCharge: Joi.number().min(0).required(),

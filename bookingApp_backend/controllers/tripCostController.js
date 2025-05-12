@@ -1,6 +1,7 @@
 // import { tripCostValidation, TripCost } from "../models/TripCostModel";
 const { Booking } = require("../models/BookingModel");
-const { tripCostValidation, TripCost } = require("../models/TripCostModel")
+const { tripCostValidation, TripCost } = require("../models/TripCostModel");
+const { Vehicle } = require("../models/VehicleModel");
 
 exports.addTripCost = async (req, res) => {
     try {
@@ -11,7 +12,10 @@ exports.addTripCost = async (req, res) => {
         } else {
             const tripCost = await TripCost.create(req.body);
             // add trip cost data in booking
-            const booking = await Booking.findById(req.params.id, "tripCost tripCompleted");
+            const booking = await Booking.findById(req.params.id, "tripCost tripCompleted allotment").populate("allotment", "vehicle");
+            const vehicle = await Vehicle.findById(booking.allotment.vehicle, "onTrip");
+            vehicle.onTrip = false;
+            await vehicle.save();
             booking.tripCost = tripCost._id;
             booking.tripCompleted = true;
             await booking.save();

@@ -3,15 +3,17 @@ const Joi = require("joi");
 
 const vehicleSchema = mongoose.Schema({
     name: { type: String },
-    type: {type: String},
+    type: { type: String },
     capacity: { type: Number },
     ownerCumDriver: { type: Boolean },
     FCExpireDate: { type: Date },
     insuranceExpireDate: { type: Date },
     registeredOwnerName: { type: String },
     vehicleNo: { type: String },
-    mfgYear: { type: Number }
-});
+    mfgYear: { type: Number },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
+    onTrip: { type: Boolean, default: false }
+}, { timestamps: true });
 
 const Vehicle = mongoose.model("vehicle", vehicleSchema);
 
@@ -26,7 +28,8 @@ const vehicleValidation = Joi.object({
     insuranceExpireDate: Joi.date().required(),
     registeredOwnerName: Joi.string().required(),
     vehicleNo: Joi.string().required(),
-    mfgYear: Joi.number().integer().min(1900).required()
+    mfgYear: Joi.number().integer().min(1900).required(),
+    createdBy: Joi.any().optional()
 });
 
 module.exports = { Vehicle, vehicleValidation }

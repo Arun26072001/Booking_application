@@ -52,8 +52,6 @@ app.use((req, res, next) => {
 
 const deleteImage = (filename) => {
     const filePath = path.join(__dirname, "tripDocs", filename); // adjust path as needed
-    console.log(filePath);
-
     fs.unlink(filePath, (err) => {
         if (err) {
             console.error('Failed to delete image:', err);

@@ -2,16 +2,20 @@ const { vehicleValidation, Vehicle } = require("../models/VehicleModel");
 
 async function addVehicle(req, res) {
     try {
-        const validation = vehicleValidation.validate(req.body);
+        const newVehicle = {
+            ...req.body,
+            createdBy: req.params.id
+        }
+        const validation = vehicleValidation.validate(newVehicle);
         const { error } = validation;
         if (error) {
-            res.status(403).send({ error: error.message.replace(/["\\]/g, '') })
+            res.status(400).send({ error: error.message.replace(/["\\]/g, '') })
         } else {
             // const isVehicle = await Vehicle.find({ vehicleNo: req.body.vehicleNo });
-            if (await Vehicle.exists({ vehicleNo: req.body.vehicleNo })) {
-                res.status(400).send({ error: `Already has this ${req.body.vehicleNo} taxi` })
+            if (await Vehicle.exists({ vehicleNo: newVehicle.vehicleNo })) {
+                res.status(400).send({ error: `Already has this ${newVehicle.vehicleNo} taxi` })
             } else {
-                const addingVehicle = await Vehicle.create(req.body);
+                const addingVehicle = await Vehicle.create(newVehicle);
                 res.send({ message: `New ${addingVehicle.name} taxi added` })
             }
         }
@@ -22,10 +26,30 @@ async function addVehicle(req, res) {
 
 async function getAllVehicles(req, res) {
     try {
-        const vehicles = await Vehicle.find().exec();
+        let filterObj = {};
+        if (req.query.filter) {
+            filterObj = req.query.filter;
+        }
+        const vehicles = await Vehicle.find(
+            filterObj
+        ).exec();
         res.send(vehicles)
     } catch (error) {
         res.send({ error: error.message })
+    }
+}
+
+async function fetchDriverVehicles(req, res) {
+    try {
+        const vehicles = await Vehicle.find({ createdBy: req.params.id }).lean().exec();
+        if (!vehicles.length) {
+            return res.send([])
+        } else {
+            return res.send(vehicles)
+        }
+    } catch (error) {
+        console.log("error in fetch driver vehicles", error);
+        return res.status(500).send({ error: error.message })
     }
 }
 
@@ -66,4 +90,4 @@ async function deleteVehicle(req, res) {
     }
 }
 
-module.exports = { addVehicle, getAllVehicles, deleteVehicle, getVehicleById, updateVehicle };
+module.exports = { addVehicle, fetchDriverVehicles, getAllVehicles, deleteVehicle, getVehicleById, updateVehicle };

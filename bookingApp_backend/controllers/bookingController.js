@@ -55,7 +55,9 @@ async function getAllBookings(req, res) {
 
         if (req?.query?.dateRangeValue) {
             const startDate = new Date(req?.query?.dateRangeValue[0]);
-            const endDate = new Date(req?.query?.dateRangeValue[1])
+            const endDate = new Date(req?.query?.dateRangeValue[1]);
+            console.log(startDate, endDate);
+            
             filterObj = {
                 pickupDateTime: { $gte: startDate, $lte: endDate }
             }
