@@ -28,7 +28,7 @@ const vehicleValidation = Joi.object({
     insuranceExpireDate: Joi.date().required(),
     registeredOwnerName: Joi.string().required(),
     vehicleNo: Joi.string().required(),
-    mfgYear: Joi.number().integer().min(1900).required(),
+    mfgYear: Joi.number().integer().min(1900).max(new Date().getFullYear()).required(),
     createdBy: Joi.any().optional()
 });
 

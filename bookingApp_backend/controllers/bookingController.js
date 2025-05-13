@@ -48,21 +48,17 @@ async function getBookingById(req, res) {
 
 async function getAllBookings(req, res) {
     try {
-        console.log("try to fetch bookings");
-        
         let filterObj = {};
-        console.log("rangeDate:", req?.query?.dateRangeValue);
 
         if (req?.query?.dateRangeValue) {
             const startDate = new Date(req?.query?.dateRangeValue[0]);
             const endDate = new Date(req?.query?.dateRangeValue[1]);
-            console.log(startDate, endDate);
             
             filterObj = {
                 pickupDateTime: { $gte: startDate, $lte: endDate }
             }
         }
-
+        
         let bookings = await Booking.find(filterObj).populate([
             {
                 path: "bookedBy", select: "name"
@@ -83,11 +79,10 @@ async function getAllBookings(req, res) {
             return res.status(200).send([]);
         }
 
-        bookings = bookings.sort((a, b) => new Date(b.pickupDateTime) - new Date(a.pickupDateTime))
-        res.send(bookings);
+        bookings = bookings.sort((a, b) => new Date(b.pickupDateTime) - new Date(a.pickupDateTime));
+        return res.send(bookings);
     } catch (error) {
         console.log(error);
-
         res.status(500).send({ error: error.message })
     }
 }
