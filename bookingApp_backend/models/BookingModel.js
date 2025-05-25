@@ -9,7 +9,7 @@ const bookingSchema = new mongoose.Schema({
     email: { type: String, trim: true, lowercase: true },
     tripType: { type: String }, // Fixed definition
     numOfPeople: { type: Number },
-    vehicleType: { type: mongoose.Schema.Types.ObjectId, ref: "vehicle" },
+    vehicleType: { type: String },
     pickupDateTime: { type: Date },
     pickupLocation: { type: String },
     pickupLocationLink: { type: String },
@@ -40,7 +40,7 @@ const bookingValidation = Joi.object({
     email: Joi.string().email().lowercase().trim().required(),
     tripType: Joi.string().required(),
     numOfPeople: Joi.number().integer().min(1).max(100).required(),
-    vehicleType: Joi.string().hex().length(24).required(),
+    vehicleType: Joi.string().required(),
     pickupDateTime: Joi.string().required(), // Consider changing to Joi.date() if you're using ISO strings
     pickupLocation: Joi.string().required(),
     pickupLocationLink: Joi.string().uri().allow(""), // Optional but must be valid URL if present
