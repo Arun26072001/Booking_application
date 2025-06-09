@@ -14,7 +14,8 @@ exports.addEmployee = async (req, res) => {
                 account: req.body.role === "Admin" ? 1 :
                     req.body.role === "Manager" ? 2 :
                         req.body.role === "Accountant" ? 5 :
-                            req.body.role === "Consultant" ? 3 : 4,
+                            req.body.role === "Consultant" ? 3 :
+                                req.body.role === "Vendor" ? 6 : 4,
                 createdBy: req.params.id
             }
             const [isEmpEmail, isEmpPhone] = await Promise.all([

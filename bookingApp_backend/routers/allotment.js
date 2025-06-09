@@ -1,12 +1,11 @@
 const express = require("express");
 const { addAllotment, getAllotments, getAllomentById, updateAllotment } = require("../controllers/AllotmentController");
-const { verifyAdmin, verifyAdminManager, verifyEmployees } = require("../middleware/authorization");
+const { verifyAdminManagerVendor, verifyEmployees } = require("../middleware/authorization");
 const router = express.Router();
 
-// router.get("/driver-trips", getDriverTrips);
-router.post("/:id", verifyAdminManager, addAllotment);
+router.post("/:id", verifyAdminManagerVendor, addAllotment);
 router.get("/", verifyEmployees, getAllotments);
-router.get("/:id", verifyAdminManager, getAllomentById);
-router.put("/:id", verifyAdminManager, updateAllotment)
+router.get("/:id", verifyAdminManagerVendor, getAllomentById);
+router.put("/:id", verifyAdminManagerVendor, updateAllotment)
 
 module.exports = router;

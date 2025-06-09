@@ -1,12 +1,12 @@
 const express = require("express");
 const { addBooking, getBookingById, getAllBookings, deleteBooking, getCustomers, getDriverBookings, getAllotorTrips, updateBooking, getBookingByMail } = require("../controllers/bookingController");
-const { verifyAdmin, verifyAllotor, verifyAdminManagerConsultant, verifyEmployees, verifyDriverManagerAdmin, verifyAdminManagerConsultantAccount } = require("../middleware/authorization");
+const { verifyAdmin, verifyAllotor, verifyAdminManagerConsultant, verifyEmployees, verifyVendorDriverManagerAdmin, verifyAdminManagerConsultantAccount } = require("../middleware/authorization");
 const router = express.Router();
 
 router.get("/customers", verifyAdminManagerConsultantAccount, getCustomers);
 router.get("/customer/:mail", verifyAdminManagerConsultantAccount, getBookingByMail);
 // getting driver trips
-router.get("/driver-booking/:id", verifyDriverManagerAdmin, getDriverBookings);
+router.get("/driver-booking/:id", verifyVendorDriverManagerAdmin, getDriverBookings);
 // get alloter trips
 router.get("/allotor-booking/:id", verifyAllotor, getAllotorTrips);
 router.post("/:id", verifyAdminManagerConsultant, addBooking);

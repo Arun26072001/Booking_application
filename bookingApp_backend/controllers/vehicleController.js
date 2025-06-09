@@ -82,6 +82,10 @@ async function getVehicleById(req, res) {
 
 async function deleteVehicle(req, res) {
     try {
+        const vehicle = await Vehicle.findById(req.params.id).lean().exec();
+        if (vehicle.onTrip) {
+            return res.status(400).send({ error: "You can't delete the vehicle because it is on a trip." })
+        }
         const deleted = await Vehicle.findByIdAndDelete(req.params.id);
         return res.send({ message: `${deleted.name} Vehicle is delete successfully` })
     } catch (error) {

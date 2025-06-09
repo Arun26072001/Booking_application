@@ -29,7 +29,10 @@ const vehicleValidation = Joi.object({
     registeredOwnerName: Joi.string().required(),
     vehicleNo: Joi.string().required(),
     mfgYear: Joi.number().integer().min(1900).max(new Date().getFullYear()).required(),
-    createdBy: Joi.any().optional()
+    createdBy: Joi.any().optional(),
+    createdAt: Joi.any().optional(),
+    updatedAt: Joi.any().optional(),
+    onTrip: Joi.any().optional()
 });
 
 module.exports = { Vehicle, vehicleValidation }
