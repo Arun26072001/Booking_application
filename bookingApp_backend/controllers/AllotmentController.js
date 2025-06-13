@@ -38,7 +38,7 @@ async function addAllotment(req, res) {
                 });
 
                 var mailOptions = {
-                    from: process.env.EMAIL,
+                    from: `RBC Travels <${process.env.EMAIL}>`,
                     to: email,
                     subject: 'Booking confirmation from RBC Travels',
                     html: `<!DOCTYPE html>
@@ -131,7 +131,7 @@ async function updateAllotment(req, res) {
                 });
 
                 var mailOptions = {
-                    from: process.env.EMAIL,
+                    from: `RBC Travels <${process.env.EMAIL}>`,
                     to: email,
                     subject: 'Booking Confirmation from RBC Travels 🚖',
                     html: `<!DOCTYPE html>
